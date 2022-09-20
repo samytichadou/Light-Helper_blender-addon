@@ -1,1 +1,1 @@
-# Ligh-Helper_blender-addon
+# Light-Helper_blender-addon
