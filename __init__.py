@@ -34,6 +34,8 @@ bl_info = {
 
 from . import   (
     gui,
+    select_light_operator,
+    properties,
 )
 
 
@@ -42,6 +44,10 @@ from . import   (
 
 def register():
     gui.register()
+    select_light_operator.register()
+    properties.register()
 
 def unregister():
     gui.unregister()
+    select_light_operator.unregister()
+    properties.unregister()
