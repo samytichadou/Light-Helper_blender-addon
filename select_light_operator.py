@@ -2,6 +2,16 @@ import bpy
 
 from .gui import get_lights_objects
 
+def unisolate(target_light, light_list, scn_props):
+    target_light.hide_viewport=target_light.lighthelper_object_properties.hidden_viewport
+    target_light.hide_render=target_light.lighthelper_object_properties.hidden_render
+
+    for ob in light_list:
+        if ob!=target_light:
+            ob.hide_viewport=ob.lighthelper_object_properties.hidden_viewport
+            ob.hide_render=ob.lighthelper_object_properties.hidden_render
+    scn_props.isolated_light=None
+
 
 class LIGHTHELPER_OT_select_isolate_light(bpy.types.Operator):
     """Click - Select \nShift Click - Add to Selection\nAlt Click - Isolate"""
@@ -10,7 +20,6 @@ class LIGHTHELPER_OT_select_isolate_light(bpy.types.Operator):
     bl_options = {"REGISTER", "UNDO","INTERNAL"}
 
     light_name: bpy.props.StringProperty()
-    unisolate: bpy.props.BoolProperty()
     shift=False
     alt=False
 
@@ -27,6 +36,14 @@ class LIGHTHELPER_OT_select_isolate_light(bpy.types.Operator):
  
     def execute(self, context):
         light_list=get_lights_objects(context)
+        scn_props=context.scene.lighthelper_scene_properties
+
+        # Unisolate
+        if self.light_name=="":
+            target_light=scn_props.isolated_light
+            unisolate(target_light,light_list,scn_props)
+            self.report({'INFO'}, "Lights restaurées")
+            return {'FINISHED'}
 
         # Selection
         if not self.alt:
@@ -54,8 +71,6 @@ class LIGHTHELPER_OT_select_isolate_light(bpy.types.Operator):
 
         # Isolation
         else:
-            scn_props=context.scene.lighthelper_scene_properties
-
             target_light=None
             de_isolate=False
 
@@ -76,16 +91,7 @@ class LIGHTHELPER_OT_select_isolate_light(bpy.types.Operator):
 
             # De Isolate
             if de_isolate:
-                target_light.hide_viewport=target_light.lighthelper_object_properties.hidden_viewport
-                target_light.hide_render=target_light.lighthelper_object_properties.hidden_render
-
-                for ob in light_list:
-                    if ob!=target_light:
-                        ob.hide_viewport=ob.lighthelper_object_properties.hidden_viewport
-                        ob.hide_render=ob.lighthelper_object_properties.hidden_render
-
-                scn_props.isolated_light=None
-
+                unisolate(target_light,light_list,scn_props)
                 self.report({'INFO'}, "Lights restaurées")
 
             # Isolate
