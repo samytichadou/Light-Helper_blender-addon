@@ -1,10 +1,10 @@
 import bpy
 
 
-class LIGHTHELPER_OT_select_light(bpy.types.Operator):
-    """Select Light, Shift to add to existing selection"""
-    bl_idname = "lighthelper.select_light"
-    bl_label = "Select Light"
+class LIGHTHELPER_OT_select_isolate_light(bpy.types.Operator):
+    """Click - Select \nShift Click - Add to Selection\nAlt Click - Isolate"""
+    bl_idname = "lighthelper.select_isolate_light"
+    bl_label = "Select/Isolate Light"
     bl_options = {"REGISTER", "UNDO","INTERNAL"}
 
     light_name : bpy.props.StringProperty()   
@@ -48,7 +48,7 @@ class LIGHTHELPER_OT_select_light(bpy.types.Operator):
 
 
 def register():
-    bpy.utils.register_class(LIGHTHELPER_OT_select_light)
+    bpy.utils.register_class(LIGHTHELPER_OT_select_isolate_light)
 
 def unregister():
-    bpy.utils.unregister_class(LIGHTHELPER_OT_select_light)
+    bpy.utils.unregister_class(LIGHTHELPER_OT_select_isolate_light)

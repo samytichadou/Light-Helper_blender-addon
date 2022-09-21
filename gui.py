@@ -68,7 +68,7 @@ class LIGHTHELPER_PT_manager(bpy.types.Panel):
 
             # Light Selector
             op=row.operator(
-                'lighthelper.select_light',
+                'lighthelper.select_isolate_light',
                 text="",
                 icon=get_selection_icon(light,context),
                 emboss=False,
