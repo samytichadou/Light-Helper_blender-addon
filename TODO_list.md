@@ -1,3 +1,4 @@
 -[x] display view_layer lights only
 -[ ] isolate operator
 -[ ] extra props for specific light types
+-[ ] selector icon for active not selected
