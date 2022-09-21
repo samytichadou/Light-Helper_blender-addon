@@ -34,6 +34,18 @@ class LIGHTHELPER_PT_manager(bpy.types.Panel):
     bl_category = "Lights"
     bl_label = "Light Manager"
 
+    def draw_header(self, context):
+        layout = self.layout
+
+        scn_props=context.scene.lighthelper_scene_properties
+        if scn_props.isolated_light is None:
+            icon="LIGHT"
+        else:
+            icon="OUTLINER_OB_LIGHT"
+            layout.alert=True
+
+        layout.label(text="", icon=icon)
+
     def draw(self, context):
         isolated_light=context.scene.lighthelper_scene_properties.isolated_light
         layout = self.layout
