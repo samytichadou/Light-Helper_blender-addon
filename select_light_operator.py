@@ -20,11 +20,11 @@ class LIGHTHELPER_OT_select_light(bpy.types.Operator):
         return self.execute(context)
  
     def execute(self, context):
-        scn=context.scene
+        v_layer=context.view_layer
 
         # Get light if exists
         chk_exist=False
-        for ob in scn.objects:
+        for ob in v_layer.objects:
             if ob.name==self.light_name:
                 ob.select_set(True)
                 context.view_layer.objects.active=ob
@@ -38,7 +38,7 @@ class LIGHTHELPER_OT_select_light(bpy.types.Operator):
 
         # Deselect all other objects
         if not self.shift:
-            for ob in scn.objects:
+            for ob in v_layer.objects:
                 if ob.name!=self.light_name:
                     ob.select_set(False)
 

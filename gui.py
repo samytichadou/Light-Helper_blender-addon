@@ -1,8 +1,8 @@
 import bpy
 
-def get_lights_objects(scene):
+def get_lights_objects(context):
     light_list=[]
-    for obj in scene.objects:
+    for obj in context.view_layer.objects:
         if obj.type=='LIGHT':
             light_list.append(obj)
     return light_list
@@ -37,7 +37,7 @@ class LIGHTHELPER_PT_manager(bpy.types.Panel):
         col3=split.column(align=True)
         col3.scale_x=0.9
 
-        lights=get_lights_objects(context.scene)
+        lights=get_lights_objects(context)
         for light in lights:
 
             #col1.label(text=light.name, icon=return_light_icon(light.data))
@@ -54,6 +54,17 @@ class LIGHTHELPER_PT_manager(bpy.types.Panel):
                 icon=icon,
                 emboss=False,
             )
+            if context.scene.lighthelper_scene_properties.isolated_light==light:
+                icon="OUTLINER_OB_LIGHT"
+            else:
+                icon="LIGHT_DATA"
+            op=row.operator(
+                'lighthelper.isolate_light',
+                text="",
+                icon=icon,
+                emboss=False
+            )
+            op.light_name=light.name
             row.label(text="",icon=get_selection_icon(light,context))
             op=row.operator(
                 'lighthelper.select_light',

@@ -1,3 +1,3 @@
--[ ] display view_layer lights only
+-[x] display view_layer lights only
 -[ ] isolate operator
 -[ ] extra props for specific light types
