@@ -22,7 +22,7 @@ bl_info = {
     "name": "Light Helper",
     "description": "Manage several Lights quickly",
     "author": "Samy Tichadou (tonton)",
-    "version": (0, 1, 0),
+    "version": (0, 2, 0),
     "blender": (3, 0, 0),
     "location": "",
     "wiki_url": "https://github.com/samytichadou/Light-Helper_blender-addon/blob/master/README.md",
