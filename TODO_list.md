@@ -2,3 +2,5 @@
 -[x] isolate operator
 -[x] extra props for specific light types
 -[x] selector icon for active not selected
+-[ ] on off for world only
+-[ ] light add to isolation ?

@@ -24,7 +24,7 @@ class LIGHTHELPER_OT_select_isolate_light(bpy.types.Operator):
     """Click - Select \nShift Click - Add to Selection\nAlt Click - Isolate"""
     bl_idname = "lighthelper.select_isolate_light"
     bl_label = "Select/Isolate Light"
-    bl_options = {"REGISTER", "UNDO","INTERNAL"}
+    bl_options = {"UNDO","INTERNAL"}
 
     light_name: bpy.props.StringProperty()
     shift=False
