@@ -7,6 +7,12 @@ class LIGHTHELPER_PR_object_props(bpy.types.PropertyGroup):
 
 class LIGHTHELPER_PR_scene_props(bpy.types.PropertyGroup):
     isolated_light: bpy.props.PointerProperty(type=bpy.types.Object, name="Isolated Light")
+    include_world: bpy.props.BoolProperty(
+        name="Include World",
+        description="Include World for Isolation operators",
+    )
+    hidden_world: bpy.props.PointerProperty(type=bpy.types.World, name="Hidden World")
+    hidden_world_fake_user: bpy.props.BoolProperty()
     
 ### REGISTER ---
 

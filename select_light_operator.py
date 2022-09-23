@@ -2,7 +2,8 @@ import bpy
 
 from .gui import get_lights_objects
 
-def unisolate(target_light, light_list, scn_props):
+def unisolate(target_light, light_list, scn):
+    scn_props=scn.lighthelper_scene_properties
     target_light.hide_viewport=target_light.lighthelper_object_properties.hidden_viewport
     target_light.hide_render=target_light.lighthelper_object_properties.hidden_render
 
@@ -11,6 +12,12 @@ def unisolate(target_light, light_list, scn_props):
             ob.hide_viewport=ob.lighthelper_object_properties.hidden_viewport
             ob.hide_render=ob.lighthelper_object_properties.hidden_render
     scn_props.isolated_light=None
+
+    # World
+    if scn_props.hidden_world:
+        scn.world=scn_props.hidden_world
+        scn.world.use_fake_user=scn_props.hidden_world_fake_user
+        scn_props.hidden_world=None
 
 
 class LIGHTHELPER_OT_select_isolate_light(bpy.types.Operator):
@@ -36,12 +43,13 @@ class LIGHTHELPER_OT_select_isolate_light(bpy.types.Operator):
  
     def execute(self, context):
         light_list=get_lights_objects(context)
-        scn_props=context.scene.lighthelper_scene_properties
+        scn=context.scene
+        scn_props=scn.lighthelper_scene_properties
 
         # Unisolate
         if self.light_name=="":
             target_light=scn_props.isolated_light
-            unisolate(target_light,light_list,scn_props)
+            unisolate(target_light,light_list,scn)
             self.report({'INFO'}, "Lights restaurées")
             return {'FINISHED'}
 
@@ -91,11 +99,13 @@ class LIGHTHELPER_OT_select_isolate_light(bpy.types.Operator):
 
             # De Isolate
             if de_isolate:
-                unisolate(target_light,light_list,scn_props)
+                unisolate(target_light,light_list,scn)
                 self.report({'INFO'}, "Lights restaurées")
 
             # Isolate
             else:
+
+                # Lights
                 if scn_props.isolated_light is None:
                     target_light.lighthelper_object_properties.hidden_viewport=target_light.hide_viewport
                     target_light.lighthelper_object_properties.hidden_render=target_light.hide_render
@@ -109,6 +119,14 @@ class LIGHTHELPER_OT_select_isolate_light(bpy.types.Operator):
                         ob.hide_viewport=ob.hide_render=True
 
                 scn_props.isolated_light=target_light
+
+                # World
+                if scn_props.include_world:
+                    if scn.world:
+                        scn_props.hidden_world=scn.world
+                        scn_props.hidden_world_fake_user=scn.world.use_fake_user
+                        scn.world.use_fake_user=True
+                        scn.world=None
 
                 self.report({'INFO'}, "%s isolée" % self.light_name)
 

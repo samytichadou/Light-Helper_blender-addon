@@ -101,8 +101,16 @@ class LIGHTHELPER_PT_manager(bpy.types.Panel):
             op.light_name=""
 
     def draw(self, context):
-        isolated_light=context.scene.lighthelper_scene_properties.isolated_light
+        scn=context.scene
+        props=scn.lighthelper_scene_properties
+        isolated_light=props.isolated_light
         layout = self.layout
+
+        row=layout.row(align=True)
+        if props.hidden_world is not None:
+            row.enabled=False
+        row.prop(props, "include_world", text="")
+        row.template_ID(scn, "world", new="world.new")
 
         col=layout.column(align=True)
 
@@ -110,33 +118,22 @@ class LIGHTHELPER_PT_manager(bpy.types.Panel):
         for light in lights:
             props=light.lighthelper_object_properties
 
-            not_isolated=False
-            if isolated_light is not None and isolated_light!=light:
-                not_isolated=True
-            
             box=col.box()
-            row=box.row(align=True)
-            # if not props.hide_panel:
-            # box=col.box()
-            # row=box.row(align=True)
-            # else:
-            #     row=col.row(align=True)
 
-            # Light Subpanel display toggle
+            not_isolated=False
+            if isolated_light is not None:
+                if isolated_light!=light:
+                    not_isolated=True
+                else:
+                    box.alert=True
+
+            row=box.row(align=True)
+
             if props.hide_panel:
                 icon="RIGHTARROW_THIN"
             else:
                 icon="DOWNARROW_HLT"
             row.prop(props,'hide_panel',text="",icon=icon,emboss=False)
-
-            # Isolate
-            # op=row.operator(
-            #     'lighthelper.isolate_light',
-            #     text="",
-            #     icon="OUTLINER_OB_FONT",
-            #     emboss=False
-            # )
-            # op.light_name=light.name
 
             # Light Selector
             op=row.operator(
