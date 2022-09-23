@@ -27,6 +27,61 @@ def get_selection_icon(ob,context):
     else:
         return "RADIOBUT_OFF"
 
+def draw_common_light_props(container, light_data):
+    container.prop(light_data.cycles, "max_bounces")
+    container.prop(light_data.cycles, "cast_shadow")
+
+def draw_point_light_settings(container, light_data):
+    # Radius, Max bounce, Cast shadow
+    col=container.column(align=True)
+
+    row=col.row(align=True)
+    row.prop(light_data, "shadow_soft_size", text="Radius")
+
+    row=col.row(align=True)
+    draw_common_light_props(row, light_data)
+
+def draw_sun_light_settings(container, light_data):
+    # Angle, Max bounce, Cast shadow
+    col=container.column(align=True)
+
+    row=col.row(align=True)
+    row.prop(light_data, "angle")
+
+    row=col.row(align=True)
+    draw_common_light_props(row, light_data)
+
+def draw_spot_light_settings(container, light_data):
+    # Radius, Max bounce, Cast shadow, Spot size, Spot blend, Show cone
+    col=container.column(align=True)
+
+    row=col.row(align=True)
+    row.prop(light_data, "shadow_soft_size", text="Radius")
+    row.prop(light_data, "spot_size")
+    
+    row=col.row(align=True)
+    row.prop(light_data, "spot_blend")
+    row.prop(light_data, "show_cone")
+    
+    row=col.row(align=True)
+    draw_common_light_props(row, light_data)
+
+def draw_area_light_settings(container, light_data):
+    # Shape, Size X Y, Max bounce, Cast shadow, Spread
+    col=container.column(align=True)
+
+    row=col.row(align=True)
+    row.prop(light_data, "shape", text="")
+    row.prop(light_data, "size")
+
+    row=col.row(align=True)
+    if light_data.shape in {"RECTANGLE","ELLIPSE"}:
+        row.prop(light_data, "size_y")
+    row.prop(light_data, "spread")
+    
+    row=col.row(align=True)
+    draw_common_light_props(row, light_data)
+
 
 class LIGHTHELPER_PT_manager(bpy.types.Panel):
     bl_space_type = 'VIEW_3D'
@@ -53,15 +108,21 @@ class LIGHTHELPER_PT_manager(bpy.types.Panel):
 
         lights=get_lights_objects(context)
         for light in lights:
+            props=light.lighthelper_object_properties
+
             not_isolated=False
             if isolated_light is not None and isolated_light!=light:
                 not_isolated=True
-
-            #box=col.box()
-            row=col.row(align=True)
+            
+            box=col.box()
+            row=box.row(align=True)
+            # if not props.hide_panel:
+            # box=col.box()
+            # row=box.row(align=True)
+            # else:
+            #     row=col.row(align=True)
 
             # Light Subpanel display toggle
-            props=light.lighthelper_object_properties
             if props.hide_panel:
                 icon="RIGHTARROW_THIN"
             else:
@@ -98,9 +159,22 @@ class LIGHTHELPER_PT_manager(bpy.types.Panel):
             
             # Hide props
             row.separator()
-            row.prop(light, 'hide_select', text="", emboss=False)
-            row.prop(light, 'hide_viewport', text="", emboss=False)
-            row.prop(light, 'hide_render', text="", emboss=False)
+            sub=row.row()
+            sub.scale_x=0.75
+            sub.prop(light, 'hide_select', text="", emboss=False)
+            sub.prop(light, 'hide_viewport', text="", emboss=False)
+            sub.prop(light, 'hide_render', text="", emboss=False)
+
+            if not props.hide_panel:
+                # box=col.box()
+                if light.data.type=="POINT":
+                    draw_point_light_settings(box, light.data)
+                elif light.data.type=="SUN":
+                    draw_sun_light_settings(box, light.data)
+                elif light.data.type=="SPOT":
+                    draw_spot_light_settings(box, light.data)
+                elif light.data.type=="AREA":
+                    draw_area_light_settings(box, light.data)
 
 
 def register():
